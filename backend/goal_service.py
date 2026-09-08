@@ -119,3 +119,139 @@ def update_goal(goal_id, title, description, category, priority, deadline):
 
     conn.commit()
     conn.close()
+    # ======================================================
+# DASHBOARD STATISTICS
+# ======================================================
+
+def get_dashboard_statistics():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Total Goals
+    cursor.execute("SELECT COUNT(*) FROM goals")
+    total = cursor.fetchone()[0]
+
+    # Completed Goals
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM goals
+        WHERE status = 'Completed'
+    """)
+    completed = cursor.fetchone()[0]
+
+    # Pending Goals
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM goals
+        WHERE status = 'Pending'
+    """)
+    pending = cursor.fetchone()[0]
+
+    # High Priority Goals
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM goals
+        WHERE priority = 'High'
+        AND status = 'Pending'
+    """)
+    high_priority = cursor.fetchone()[0]
+
+    conn.close()
+
+    return {
+        "total": total,
+        "completed": completed,
+        "pending": pending,
+        "high_priority": high_priority
+    }
+
+
+# ======================================================
+# UPCOMING DEADLINES
+# ======================================================
+
+def get_upcoming_deadlines(limit=5):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM goals
+        WHERE status = 'Pending'
+        ORDER BY deadline ASC
+        LIMIT ?
+    """, (limit,))
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
+
+
+# ======================================================
+# HIGH PRIORITY GOALS
+# ======================================================
+
+def get_high_priority_goals(limit=5):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM goals
+        WHERE priority = 'High'
+        AND status = 'Pending'
+        ORDER BY deadline ASC
+        LIMIT ?
+    """, (limit,))
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
+# ======================================================
+# COMPLETION PERCENTAGE
+# ======================================================
+
+def get_completion_percentage():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM goals")
+    total = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM goals
+        WHERE status = 'Completed'
+    """)
+
+    completed = cursor.fetchone()[0]
+
+    conn.close()
+
+    if total == 0:
+        return 0
+
+    return round((completed / total) * 100)
+
+# ======================================================
+# MARK GOAL AS PENDING
+# ======================================================
+
+def mark_goal_pending(goal_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE goals
+        SET status = 'Pending'
+        WHERE id = ?
+    """, (goal_id,))
+
+    conn.commit()
+    conn.close()

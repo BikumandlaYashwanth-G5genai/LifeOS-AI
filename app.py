@@ -5,29 +5,70 @@ from backend.database import initialize_database
 from frontend.sidebar import sidebar
 from frontend.dashboard import dashboard
 from frontend.goals import goals_page
+from frontend.memory import memory_page
+from frontend.context import context_page
+from frontend.assistant import assistant_page
+from frontend.knowledge_vault import knowledge_vault_page
+from frontend.settings import settings_page
+
+
+
+# =====================================================
+# DATABASE
+# =====================================================
 
 initialize_database()
 
+
+# =====================================================
+# SIDEBAR
+# =====================================================
+
 page = sidebar()
 
+
+# =====================================================
+# PAGE ROUTING
+# =====================================================
+
 if page == "Dashboard":
+
     dashboard()
 
+
 elif page == "Goals":
+
     goals_page()
 
+
 elif page == "Memory":
-    st.title("Memory Engine")
-    st.info("Coming Soon")
+
+    memory_page()
+
+
+elif page == "LifeOS Context":
+
+    context_page()
+
+
+elif page == "AI Assistant":
+
+    assistant_page()
+
 
 elif page == "Planner":
-    st.title("Planner")
-    st.info("Coming Soon")
+
+    from frontend.planner import planner_page
+
+    planner_page()
+
+
 
 elif page == "Knowledge Vault":
-    st.title("Knowledge Vault")
-    st.info("Coming Soon")
+
+    knowledge_vault_page()
+
 
 elif page == "Settings":
-    st.title("Settings")
-    st.info("Coming Soon")
+
+    settings_page()
