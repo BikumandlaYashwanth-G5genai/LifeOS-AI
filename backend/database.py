@@ -1,36 +1,28 @@
 import sqlite3
-import os
 
-DATABASE_PATH = "database/lifeos.db"
+DB_NAME = "database/lifeos.db"
+
+
+def get_connection():
+    return sqlite3.connect(DB_NAME)
 
 
 def initialize_database():
-
-    os.makedirs("database", exist_ok=True)
-
-    connection = sqlite3.connect(DATABASE_PATH)
-
-    cursor = connection.cursor()
+    conn = get_connection()
+    cursor = conn.cursor()
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS goals(
+    CREATE TABLE IF NOT EXISTS goals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         description TEXT,
+        category TEXT,
+        priority TEXT,
         deadline TEXT,
         status TEXT DEFAULT 'Pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS memories(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        memory TEXT,
-        category TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
-
-    connection.commit()
-    connection.close()
+    conn.commit()
+    conn.close()

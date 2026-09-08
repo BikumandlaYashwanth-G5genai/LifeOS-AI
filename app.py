@@ -1,15 +1,10 @@
 import streamlit as st
 
-from frontend.sidebar import sidebar
-from frontend.dashboard import dashboard
-
 from backend.database import initialize_database
 
-st.set_page_config(
-    page_title="LifeOS AI",
-    page_icon="🧠",
-    layout="wide"
-)
+from frontend.sidebar import sidebar
+from frontend.dashboard import dashboard
+from frontend.goals import goals_page
 
 initialize_database()
 
@@ -19,21 +14,20 @@ if page == "Dashboard":
     dashboard()
 
 elif page == "Goals":
-    st.title("🎯 Goals")
-    st.info("Coming Soon")
+    goals_page()
 
 elif page == "Memory":
-    st.title("🧠 Memory")
+    st.title("Memory Engine")
     st.info("Coming Soon")
 
 elif page == "Planner":
-    st.title("📅 Planner")
+    st.title("Planner")
     st.info("Coming Soon")
 
 elif page == "Knowledge Vault":
-    st.title("📚 Knowledge Vault")
+    st.title("Knowledge Vault")
     st.info("Coming Soon")
 
-else:
-    st.title("⚙ Settings")
+elif page == "Settings":
+    st.title("Settings")
     st.info("Coming Soon")
